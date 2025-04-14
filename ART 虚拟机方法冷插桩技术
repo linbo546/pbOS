@@ -1,0 +1,25 @@
+// 基于 Android 13 ART 虚拟机源码修改
+void ReplaceArtMethod(ArtMethod* target, ArtMethod* replacement) {
+    // 获取方法入口点
+    const void* target_code = target->GetEntryPointFromQuickCompiledCode();
+    const void* replacement_code = replacement->GetEntryPointFromQuickCompiledCode();
+    
+    // 内存保护解除
+    UnprotectMemory(target_code, PAGE_SIZE);
+    
+    // 动态代码重写（ARM64 汇编指令级操作）
+    if (IsTargetArm64()) {
+        uint32_t* code_ptr = reinterpret_cast<uint32_t*>(target_code);
+        code_ptr[0] = 0xD503201F; // NOP 指令填充
+        code_ptr[1] = 0xD503201F;
+        code_ptr[2] = 0x58000050; // LDR x16, #16
+        code_ptr[3] = 0xD61F0200; // BR x16
+        *reinterpret_cast<void**>(code_ptr + 4) = replacement_code;
+    }
+    
+    // 刷新指令缓存
+    __builtin___clear_cache(
+        reinterpret_cast<char*>(code_ptr),
+        reinterpret_cast<char*>(code_ptr) + 32
+    );
+}
