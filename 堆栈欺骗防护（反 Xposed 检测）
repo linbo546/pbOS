@@ -1,0 +1,23 @@
+// 动态字节码重组技术
+public class AntiDetectionHook implements IXposedHookLoadPackage {
+    private static final String[] DETECTION_METHODS = {
+        "de.robv.android.xposed.XposedBridge",
+        "com.swift.sandhook.SandHook"
+    };
+
+    @Override
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+        for (String className : DETECTION_METHODS) {
+            XposedHelpers.findAndHookMethod(className,
+                lpparam.classLoader,
+                "detectXposed",
+                new XC_MethodReplacement() {
+                    @Override
+                    protected Object replaceHookedMethod(MethodHookParam param) {
+                        // 返回虚假检测结果
+                        return new Random().nextInt(100) < 30;
+                    }
+                });
+        }
+    }
+}
