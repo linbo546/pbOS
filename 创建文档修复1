@@ -1,0 +1,12 @@
+git clone https://github.com/LSPosed/LSPosed.git
+cd LSPosed
+git checkout -b docs/zh-CN-fixes
+
+# 修改文件示例路径
+docs/zh-CN/troubleshooting.md  # 补充常见错误解决方案
+docs/zh-CN/installation.md    # 添加设备兼容性说明
+
+# 提交变更
+git add .
+git commit -m "docs: 完善中文版安装指南的兼容性说明"
+git push origin docs/zh-CN-fixes
