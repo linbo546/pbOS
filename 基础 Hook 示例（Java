@@ -1,0 +1,22 @@
+// 自动生成系统版本检测 Hook
+public class SystemHook implements IXposedHookLoadPackage {
+    @Override
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) {
+        // 只处理系统界面
+        if (!lpparam.packageName.equals("com.android.systemui")) 
+            return;
+
+        // Hook 系统版本显示方法
+        XposedHelpers.findAndHookMethod(
+            "com.android.systemui.statusbar.policy.DeviceStateController",
+            lpparam.classLoader,
+            "getAndroidVersion",
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) {
+                    // 修改返回值显示自定义版本
+                    param.setResult("Android ∞");
+                }
+            });
+    }
+}
