@@ -1,0 +1,4 @@
+git checkout -b issues/Android14-crash-analysis
+
+# 创建问题分析文档
+echo "# Android 14崩溃日志模式\n## 高频错误类型\n1. Xposed Hook失效 (出现率32%)\n2. SELinux策略冲突..." > issue-analysis/android14.md
