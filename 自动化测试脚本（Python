@@ -1,0 +1,18 @@
+# 自动检测模块激活状态
+import subprocess
+
+def check_xposed_status():
+    result = subprocess.run(
+        ['adb', 'shell', 'dumpsys', 'package', 'de.robv.android.xposed.installer'],
+        capture_output=True,
+        text=True
+    )
+    return "enabled=true" in result.stdout
+
+if check_xposed_status():
+    print("✅ Xposed 框架已激活")
+else:
+    print("❌ 框架未生效，请检查日志")
+```
+
+---
